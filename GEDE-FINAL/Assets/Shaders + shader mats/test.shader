@@ -4,11 +4,14 @@ Shader "OutlineTest" {
 		_LC("LC", Color) = (1,1,1,1)
 		_LP("LP", Vector) = (1,1,1,1)
 
-		// New stuff
+			// New stuff
 
-		_LV("LV", Vector) = (1,1,1)
-		_LN("LN", Vector) = (1,1,1)
-		//max_outline("Max Outline", Range(0.0, 1.0)) = 0.0
+			_LV("LV", Vector) = (1,1,1)
+			_LN("LN", Vector) = (1,1,1)
+			_VP("Vertex Point", Vector) = (1,1,1)
+			max_outline("Max Outline", Range(0.0, 1.0)) = 0.0
+			sound_dist("Sound distance", Float) = 10.0
+			sound_pos("Sound Position", Vector) = (1,1,1)
 	}
 
 		SubShader{
@@ -26,6 +29,9 @@ Shader "OutlineTest" {
 				uniform vec4 _LP;
 				varying vec3 _LV;
 				varying vec3 _LN;
+				varying vec3 _VP;
+				varying vec3 sound_pos;
+				uniform float sound_dist;
 				varying vec2 TextureCoordinate;
 				//varying float max_outline;
 				varying float LightIntensity;
@@ -51,9 +57,10 @@ Shader "OutlineTest" {
 					LightIntensity = 1;
 					//DiffuseContribution * diffuse + SpecularContribution * spec;
 
-				_LV = viewVec;
-				_LN = tnorm;
-			}
+					_VP = ecPosition;
+					_LV = viewVec;
+					_LN = tnorm;
+				}
 
 			#endif
 
@@ -64,23 +71,35 @@ Shader "OutlineTest" {
 			uniform vec4 _LC;
 			varying vec3 _LV;
 			varying vec3 _LN;
+			varying vec3 _VP;
+			uniform vec3 sound_pos;
+			uniform float sound_dist;
+			uniform float max_outline;
 			varying float LightIntensity;
 
 			void main() {
 				vec4 c;
-				float max_outline = 0.3;
-				if (dot(_LV, _LN) > max_outline || dot(_LV, _LN) < -max_outline) {
-					c.xyz = vec3(0, 0, 0);
-				}
-				else {
-					//discard;
-					c.xyz = vec3(1, 1, 1);
-					//texture2D(_MainTex, TextureCoordinate).xyz * _LC.xyz;
+
+				if (dot(_LN, _LV) < 0) {
+					discard;
 				}
 
-				 c *= LightIntensity;
-				 c.w = 1.0;
-				 gl_FragColor = c;
+				// Creating an outline of the object
+				if (dot(_LN, _LV) < max_outline) {
+					c.xyz = vec3(1, 1, 1);
+				}
+				else {
+					c.xyz = vec3(0, 0, 0);
+				}
+
+				// If it's out of range
+				if (distance(_VP, sound_pos) > sound_dist) {
+					c.xyz = vec3(0, 0, 0);
+				}
+
+				//c *= LightIntensity;
+				//c.w = 1.0;
+				gl_FragColor = c;
 			}
 
 		#endif
