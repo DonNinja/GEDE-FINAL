@@ -5,7 +5,7 @@ Shader "Outline2" {
 		_LC("LC", Color) = (1,1,1,1)
 		_CP("Camera Position", Vector) = (1,1,1)
 
-		max_outline("Max Outline", Range(0.0, 1.0)) = 0.0
+		max_outline("Max Outline", Range(0.0, 0.01)) = 0.0
 		sound_dist("Sound distance", Float) = 10.0
 		sound_pos("Sound Position", Vector) = (1,1,1)
 	}
@@ -15,7 +15,7 @@ Shader "Outline2" {
 
 			Pass {
 				Cull Front
-
+				
 				GLSLPROGRAM
 
 				#ifdef VERTEX
@@ -39,7 +39,7 @@ Shader "Outline2" {
 					_VP = ecPosition;
 					_LV = viewVec;
 					_LN = tnorm;
-					gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex + vec4(gl_Normal, 1) * max_outline;
+					gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex + vec4(tnorm, 1) * max_outline;
 				}
 
 			#endif

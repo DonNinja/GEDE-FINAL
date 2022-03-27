@@ -13,9 +13,6 @@ Shader "Outline" {
 			Tags { "Queue" = "Geometry" }
 
 			Pass {
-				//Cull Front
-				//Blend One One
-
 				GLSLPROGRAM
 
 				#ifdef VERTEX
@@ -66,7 +63,6 @@ Shader "Outline" {
 				uniform float max_outline;
 
 				void main() {
-					//discard;
 					// If it's out of range
 					if (distance(_VP, sound_pos) > sound_dist) {
 						discard;
