@@ -5,7 +5,7 @@ Shader "Outline2" {
 		_LC("LC", Color) = (1,1,1,1)
 		_CP("Camera Position", Vector) = (1,1,1)
 
-		max_outline("Max Outline", Range(0.0, 0.1)) = 0.0
+		max_outline("Max Outline", Range(0.0, 0.01)) = 0.0
 		sound_dist("Sound distance", Float) = 10.0
 		sound_pos("Sound Position", Vector) = (1,1,1)
 	}
@@ -53,14 +53,21 @@ Shader "Outline2" {
 				varying vec3 _VP;
 				uniform vec3 sound_pos;
 				uniform float sound_dist;
+				uniform float max_outline;
 
 				void main() {
-					// If it's out of range
-					if (distance(_VP, sound_pos) > sound_dist) {
+					if (max_outline == 0) {
 						discard;
 					}
 
-					if (dot(_LV, _LN) < 0) {
+					float depth = gl_FragCoord.z / gl_FragCoord.w;
+					vec3 world_coord = _VP;
+					world_coord.z = depth;
+
+					// If it's out of range
+					if (distance(_VP, sound_pos.xyz) > sound_dist) {
+						gl_FragColor = vec4(1, 0, 0, 1);
+						return;
 						//discard;
 					}
 

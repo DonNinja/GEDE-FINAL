@@ -57,8 +57,6 @@ Shader "Outline" {
 				ENDGLSL
 			}
 
-
-
 			Pass {
 				Cull Front
 
@@ -71,7 +69,6 @@ Shader "Outline" {
 				varying vec3 _LN;
 				varying vec3 _VP;
 				varying vec3 sound_pos;
-				varying vec4 outline_offset;
 				varying vec2 TextureCoordinate;
 				uniform float max_outline;
 
@@ -99,15 +96,16 @@ Shader "Outline" {
 				varying vec3 _VP;
 				uniform vec3 sound_pos;
 				uniform float sound_dist;
+				uniform float max_outline;
 
 				void main() {
-					// If it's out of range
-					if (distance(_VP, sound_pos) > sound_dist) {
+					if (max_outline == 0) {
 						discard;
 					}
 
-					if (dot(_LV, _LN) < 0) {
-						//discard;
+					// If it's out of range
+					if (distance(_VP, sound_pos) > sound_dist) {
+						discard;
 					}
 
 					gl_FragColor = _LC;
