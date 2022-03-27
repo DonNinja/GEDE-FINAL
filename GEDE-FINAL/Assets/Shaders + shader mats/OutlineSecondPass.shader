@@ -5,7 +5,7 @@ Shader "Outline2" {
 		_LC("LC", Color) = (1,1,1,1)
 		_CP("Camera Position", Vector) = (1,1,1)
 
-		max_outline("Max Outline", Range(0.0, 0.01)) = 0.0
+		max_outline("Max Outline", Range(0.0, 0.1)) = 0.0
 		sound_dist("Sound distance", Float) = 10.0
 		sound_pos("Sound Position", Vector) = (1,1,1)
 	}
@@ -15,7 +15,7 @@ Shader "Outline2" {
 
 			Pass {
 				Cull Front
-				
+
 				GLSLPROGRAM
 
 				#ifdef VERTEX
@@ -39,34 +39,29 @@ Shader "Outline2" {
 					_VP = ecPosition;
 					_LV = viewVec;
 					_LN = tnorm;
-					gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex + vec4(tnorm, 1) * max_outline;
+					vec3 norm_offset = tnorm * max_outline;
+					gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex + vec4(norm_offset, -0.009);
 				}
 
-			#endif
+				#endif
 
-			#ifdef FRAGMENT
+				#ifdef FRAGMENT
 
-			#define PI 3.1415926538
-
-				//uniform sampler2D _MainTex;
-				uniform sampler2D _MainTex;
-				varying vec2 TextureCoordinate;
-				uniform vec4 _CP;
 				uniform vec4 _LC;
 				varying vec3 _LV;
 				varying vec3 _LN;
 				varying vec3 _VP;
-				uniform float _width;
-				uniform float _height;
-				uniform float _outline_thickness;
 				uniform vec3 sound_pos;
 				uniform float sound_dist;
-				uniform float max_outline;
 
 				void main() {
 					// If it's out of range
 					if (distance(_VP, sound_pos) > sound_dist) {
 						discard;
+					}
+
+					if (dot(_LV, _LN) < 0) {
+						//discard;
 					}
 
 					gl_FragColor = _LC;

@@ -39,28 +39,66 @@ Shader "Outline" {
 					_VP = ecPosition;
 					_LV = viewVec;
 					_LN = tnorm;
-					gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex * 2;
+					gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 				}
 
 				#endif
 
 				#ifdef FRAGMENT
 
-				#define PI 3.1415926538
+				uniform vec4 _LC;
 
-				uniform sampler2D _MainTex;
-				varying vec2 TextureCoordinate;
+				void main() {
+					gl_FragColor = _LC;
+				}
+
+				#endif
+
+				ENDGLSL
+			}
+
+
+
+			Pass {
+				Cull Front
+
+				GLSLPROGRAM
+
+				#ifdef VERTEX
+
 				uniform vec4 _CP;
+				varying vec3 _LV;
+				varying vec3 _LN;
+				varying vec3 _VP;
+				varying vec3 sound_pos;
+				varying vec4 outline_offset;
+				varying vec2 TextureCoordinate;
+				uniform float max_outline;
+
+				void main() {
+					TextureCoordinate = gl_MultiTexCoord0.xy;
+
+					vec3 ecPosition = vec3(gl_ModelViewMatrix * gl_Vertex);
+					vec3 tnorm = normalize(gl_NormalMatrix * gl_Normal);
+					vec3 viewVec = normalize(-ecPosition);
+
+					_VP = ecPosition;
+					_LV = viewVec;
+					_LN = tnorm;
+					vec3 norm_offset = tnorm * max_outline;
+					gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex + vec4(norm_offset, -0.009);
+				}
+
+				#endif
+
+				#ifdef FRAGMENT
+
 				uniform vec4 _LC;
 				varying vec3 _LV;
 				varying vec3 _LN;
 				varying vec3 _VP;
-				uniform float _width;
-				uniform float _height;
-				uniform float _outline_thickness;
 				uniform vec3 sound_pos;
 				uniform float sound_dist;
-				uniform float max_outline;
 
 				void main() {
 					// If it's out of range
@@ -68,9 +106,12 @@ Shader "Outline" {
 						discard;
 					}
 
+					if (dot(_LV, _LN) < 0) {
+						//discard;
+					}
+
 					gl_FragColor = _LC;
 				}
-
 				#endif
 
 				ENDGLSL

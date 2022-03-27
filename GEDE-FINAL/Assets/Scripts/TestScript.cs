@@ -12,7 +12,7 @@ public class TestScript : MonoBehaviour {
 
     // Update is called once per frame
     void FixedUpdate() {
-        //radius = radius > 0 ? radius - 5 * Time.deltaTime : 50f;
+        radius = radius > 0 ? radius - 5 * Time.deltaTime : 50f;
         shade_test.SetFloat("sound_dist", radius);
     }
 }
