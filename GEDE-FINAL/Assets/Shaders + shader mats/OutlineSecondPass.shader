@@ -14,6 +14,8 @@ Shader "Outline2" {
 			Tags { "Queue" = "Geometry" }
 
 			Pass {
+				Name "SettingOutline"
+
 				Cull Front
 
 				GLSLPROGRAM
@@ -59,10 +61,6 @@ Shader "Outline2" {
 					if (max_outline == 0) {
 						discard;
 					}
-
-					float depth = gl_FragCoord.z / gl_FragCoord.w;
-					vec3 world_coord = _VP;
-					world_coord.z = depth;
 
 					// If it's out of range
 					if (distance(_VP, sound_pos.xyz) > sound_dist) {

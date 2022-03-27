@@ -11,7 +11,6 @@ public class TestScript : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        shade_test.SetVector("sound_pos", gameObject.transform.position);
     }
 
     // Update is called once per frame
@@ -26,5 +25,10 @@ public class TestScript : MonoBehaviour {
 
         shade_test.SetFloat("sound_dist", radius);
 
+        Vector3 sound_pos = player.transform.position - gameObject.transform.position;
+
+        Debug.Log(sound_pos);
+
+        shade_test.SetVector("sound_pos", sound_pos);
     }
 }
