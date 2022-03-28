@@ -8,6 +8,7 @@ Shader "Outline2" {
 		max_outline("Max Outline", Range(0.0, 0.01)) = 0.0
 		sound_dist("Sound distance", Float) = 10.0
 		sound_pos("Sound Position", Vector) = (1,1,1)
+		player_pos("Player Position", Vector) = (1,1,1)
 	}
 
 		SubShader{
@@ -54,6 +55,7 @@ Shader "Outline2" {
 				varying vec3 _LN;
 				varying vec3 _VP;
 				uniform vec3 sound_pos;
+				uniform vec3 player_pos;
 				uniform float sound_dist;
 				uniform float max_outline;
 
@@ -62,11 +64,13 @@ Shader "Outline2" {
 						discard;
 					}
 
+					vec3 sound_offset = player_pos - sound_pos;
+
 					// If it's out of range
-					if (distance(_VP, sound_pos.xyz) > sound_dist) {
-						gl_FragColor = vec4(1, 0, 0, 1);
-						return;
-						//discard;
+					if (distance(_VP, sound_offset) > sound_dist) {
+						//gl_FragColor = vec4(1, 0, 0, 1);
+						//return;
+						discard;
 					}
 
 					gl_FragColor = _LC;

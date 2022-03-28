@@ -19,16 +19,16 @@ public class TestScript : MonoBehaviour {
             radius += 50 * Time.deltaTime;
             has_reached_target = radius >= target_radius;
         } else {
-            radius -= 1 * Time.deltaTime;
+            radius -= 50 * Time.deltaTime;
             has_reached_target = radius > 0;
         }
 
         shade_test.SetFloat("sound_dist", radius);
 
-        Vector3 sound_pos = player.transform.position - gameObject.transform.position;
+        //Vector3 sound_pos = transform.position;
 
-        Debug.Log(sound_pos);
+        //shade_test.SetVector("sound_pos", sound_pos);
 
-        shade_test.SetVector("sound_pos", sound_pos);
+        //shade_test.SetVector("player_pos", player.transform.position);
     }
 }
