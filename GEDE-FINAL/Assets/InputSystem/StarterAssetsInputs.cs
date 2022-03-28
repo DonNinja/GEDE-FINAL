@@ -12,6 +12,7 @@ namespace StarterAssets
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
+		public bool pulse;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -45,6 +46,10 @@ namespace StarterAssets
 		{
 			SprintInput(value.isPressed);
 		}
+
+		public void OnPulse(InputValue value) {
+			PulseInput(value.isPressed);
+        }
 #else
 	// old input sys if we do decide to have it (most likely wont)...
 #endif
@@ -69,6 +74,10 @@ namespace StarterAssets
 		{
 			sprint = newSprintState;
 		}
+
+		public void PulseInput(bool newPulseState) {
+			pulse = newPulseState;
+        }
 
 #if !UNITY_IOS || !UNITY_ANDROID
 
